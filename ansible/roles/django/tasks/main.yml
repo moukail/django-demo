@@ -1,0 +1,32 @@
+- name: Clone Django app
+  git:
+    repo: "{{ repo_url }}"
+    dest: "/home/ubuntu/{{ project_name }}"
+
+- name: Set up virtualenv
+  command: python3 -m venv venv
+  args:
+    chdir: "/home/ubuntu/{{ project_name }}"
+
+- name: Install requirements
+  pip:
+    requirements: "/home/ubuntu/{{ project_name }}/requirements.txt"
+    virtualenv: "/home/ubuntu/{{ project_name }}/venv"
+
+- name: Set environment variables
+  copy:
+    dest: "/home/ubuntu/{{ project_name }}/.env"
+    content: |
+      SECRET_KEY={{ django_secret_key }}
+      DEBUG=False
+      DATABASE_URL=postgres://{{ postgres_user }}:{{ postgres_password }}@localhost:5432/{{ postgres_db }}
+
+- name: Migrate DB
+  command: /home/ubuntu/{{ project_name }}/venv/bin/python manage.py migrate
+  args:
+    chdir: "/home/ubuntu/{{ project_name }}"
+
+- name: Collect static files
+  command: /home/ubuntu/{{ project_name }}/venv/bin/python manage.py collectstatic --noinput
+  args:
+    chdir: "/home/ubuntu/{{ project_name }}"

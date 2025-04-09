@@ -1,0 +1,24 @@
+- name: Create Daphne systemd service
+  copy:
+    dest: /etc/systemd/system/daphne.service
+    content: |
+      [Unit]
+      Description=Daphne Service
+      After=network.target
+
+      [Service]
+      User=ubuntu
+      Group=www-data
+      WorkingDirectory=/home/ubuntu/{{ project_name }}
+      EnvironmentFile=/home/ubuntu/{{ project_name }}/.env
+      ExecStart=/home/ubuntu/{{ project_name }}/venv/bin/daphne -u /home/ubuntu/{{ project_name }}/daphne.sock {{ project_name }}.asgi:application
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Enable and start Daphne
+  systemd:
+    daemon_reload: yes
+    name: daphne
+    enabled: yes
+    state: restarted
