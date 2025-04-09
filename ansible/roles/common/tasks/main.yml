@@ -1,9 +1,5 @@
-- name: Install base packages
-  apt:
-    name:
-      - python3-pip
-      - python3-venv
-      - git
-      - nginx
-    state: present
-    update_cache: yes
+---
+- include_tasks: redhat.yml
+  when: ansible_os_family == 'RedHat'
+- include_tasks: debian.yml
+  when: ansible_os_family == 'Debian'

@@ -1,8 +1,13 @@
+
+- hosts: database
+  become: true
+  roles:
+    - postgresql
+
 - hosts: web
   become: true
   roles:
     - common
-    - postgresql
     - django
     - daphne
     - nginx

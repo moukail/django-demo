@@ -1,6 +1,6 @@
 project_name: django-demo
 repo_url: https://github.com/moukail/django-demo.git
-domain_name: yourdomain.com
+domain_name: moukail.nl
 
 postgres_user: myprojectuser
 postgres_password: securepassword

@@ -1,8 +1,14 @@
+### install python
+```bash
+sudo apt install python3.12
+```
+
 ### set up virtual environment to install django
 ```bash
 python -m venv env
 source env/bin/activate
 pip install django
+pip install -r requirements.txt
 ```
 
 ### Create a Django Project
@@ -18,3 +24,10 @@ python manage.py startapp blog
 
 Add your app to INSTALLED_APPS in mysite/settings.py.
 
+
+### Ansible
+```bash
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventory.ini ansible/main.yml --vault-password-file vault_pass.txt
+```
+
+https://stribny.name/posts/ansible-postgresql/
