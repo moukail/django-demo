@@ -1,32 +1,56 @@
 - name: Clone Django app
+  become: yes
   git:
     repo: "{{ repo_url }}"
     dest: "/home/ubuntu/{{ project_name }}"
+    version: main
+    force: yes
 
 - name: Set up virtualenv
+  become: yes
+  #become_user: postgres
   command: python3 -m venv venv
   args:
     chdir: "/home/ubuntu/{{ project_name }}"
 
 - name: Install requirements
+  become: yes
+  #become_user: postgres
   pip:
     requirements: "/home/ubuntu/{{ project_name }}/requirements.txt"
     virtualenv: "/home/ubuntu/{{ project_name }}/venv"
 
 - name: Set environment variables
+  become: yes
+  #become_user: postgres
   copy:
     dest: "/home/ubuntu/{{ project_name }}/.env"
     content: |
       SECRET_KEY={{ django_secret_key }}
       DEBUG=False
+      DB_NAME={{ postgres_db }}
+      DB_USER={{ postgres_user }}
+      DB_PASSWORD={{ postgres_password }}
+      DB_HOST={{ postgres_host }}
       DATABASE_URL=postgres://{{ postgres_user }}:{{ postgres_password }}@localhost:5432/{{ postgres_db }}
 
+#- name: Migrate DB
+#  command: /home/ubuntu/{{ project_name }}/venv/bin/python manage.py migrate
+#  args:
+#    chdir: "/home/ubuntu/{{ project_name }}"
+
 - name: Migrate DB
-  command: /home/ubuntu/{{ project_name }}/venv/bin/python manage.py migrate
-  args:
-    chdir: "/home/ubuntu/{{ project_name }}"
+  become: yes
+  #become_user: postgres
+  community.general.django_manage:
+    command: migrate
+    app_path: "/home/ubuntu/{{ project_name }}"
+    virtualenv: "/home/ubuntu/{{ project_name }}/venv"
+    settings: "{{ project_name }}.settings"
 
 - name: Collect static files
+  become: yes
+  #become_user: postgres
   command: /home/ubuntu/{{ project_name }}/venv/bin/python manage.py collectstatic --noinput
   args:
     chdir: "/home/ubuntu/{{ project_name }}"
