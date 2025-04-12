@@ -1,3 +1,5 @@
-.idea/
-staticfiles/
+.idea
+.vagrant
+.venv
+staticfiles
 vault_pass.txt
