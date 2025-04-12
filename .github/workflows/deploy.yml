@@ -24,19 +24,19 @@ jobs:
           python -m pip install --upgrade pip
           pip install ansible
 
-      - name: Add SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+#      - name: Add SSH key
+#        run: |
+#          mkdir -p ~/.ssh
+#          echo "${{ secrets.SSH_KEY }}" > ~/.ssh/id_rsa
+#          chmod 600 ~/.ssh/id_rsa
+#          ssh-keyscan -H ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Write Ansible inventory
+      - name: Write Ansible vault password
         run: |
-          echo "${{ secrets.ANSIBLE_INVENTORY }}" > inventory
+          echo "${{ secrets.ANSIBLE_VAULT_PASSWORD }}" > vault_pass.txt
 
       - name: Run Ansible playbook
         run: |
-          ansible-playbook -i inventory ansible/main.yml --ssh-extra-args='-o StrictHostKeyChecking=no'
+          ansible-playbook -i ansible/inventory.ini ansible/main.yml --vault-password-file vault_pass.txt --ssh-extra-args='-o StrictHostKeyChecking=no'
         env:
           ANSIBLE_HOST_KEY_CHECKING: False
