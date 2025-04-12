@@ -1,24 +1,28 @@
-- name: Create Daphne systemd service
+- name: Install supervisor
+  yum:
+    name: supervisor
+    state: present
+
+- name: Create Daphne supervisor conf file
   copy:
-    dest: /etc/systemd/system/daphne.service
+    dest: /etc/supervisord.d/daphne.ini
     content: |
-      [Unit]
-      Description=Daphne Service
-      After=network.target
+      [program:daphne]
+      command=/var/www/{{ project_name }}/venv/bin/daphne -p 9001 {{ project_name }}.asgi:application
+      directory=/var/www/{{ project_name }}
+      user=nginx
+      autostart=true
+      autorestart=true
+      stderr_logfile=/var/log/daphne.err.log
+      stdout_logfile=/var/log/daphne.out.log
 
-      [Service]
-      User=ubuntu
-      Group=www-data
-      WorkingDirectory=/home/ubuntu/{{ project_name }}
-      EnvironmentFile=/home/ubuntu/{{ project_name }}/.env
-      ExecStart=/home/ubuntu/{{ project_name }}/venv/bin/daphne -u /home/ubuntu/{{ project_name }}/daphne.sock {{ project_name }}.asgi:application
-
-      [Install]
-      WantedBy=multi-user.target
-
-- name: Enable and start Daphne
+- name: Enable and start supervisord
   systemd:
-    daemon_reload: yes
-    name: daphne
+    name: supervisord
     enabled: yes
     state: restarted
+
+#- name: Manage the state of program to be in started state
+#  community.general.supervisorctl:
+#    name: daphne
+#    state: restarted
