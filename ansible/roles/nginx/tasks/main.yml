@@ -70,7 +70,7 @@
     dest: /etc/letsencrypt/options-ssl-nginx.conf
 
 - name: Generate DH Parameters with a different size (2048 bits)
-  openssl_dhparam:
+  community.crypto.openssl_dhparam:
     path: /etc/letsencrypt/ssl-dhparams.pem
     size: 2048
 

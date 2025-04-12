@@ -64,7 +64,7 @@
       DB_HOST={{ postgres_host }}
       DATABASE_URL=postgres://{{ postgres_user }}:{{ postgres_password }}@localhost:5432/{{ postgres_db }}
 
-- name: Migrate 2 DB
+- name: Migrate DB
   become_user: postgres
   community.general.django_manage:
     command: migrate
