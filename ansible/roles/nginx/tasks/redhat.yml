@@ -1,0 +1,6 @@
+---
+- name: Installing Nginx Dependencies
+  yum:
+    name: [ 'libxslt-devel', 'libxml2-devel', 'gd-devel' ]
+    update_cache: yes
+    state: latest

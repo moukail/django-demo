@@ -1,0 +1,6 @@
+---
+- name: Installing Nginx Dependencies
+  apt:
+    name: ['libxml2-dev', 'libgd-dev', libssl-dev, 'libxslt1-dev', 'libpcre2-dev']
+    update_cache: yes
+    state: latest

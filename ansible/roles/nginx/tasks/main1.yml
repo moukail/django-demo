@@ -1,0 +1,32 @@
+- name: Configure Nginx for Daphne
+  copy:
+    dest: /etc/nginx/conf.d/{{ project_name }}.conf
+    content: |
+      server {
+          listen 80;
+          server_name {{ domain_name }};
+
+          location /static/ {
+              alias /var/www/{{ project_name }}/static/;
+          }
+
+          location / {
+              proxy_pass http://localhost:9001;
+              proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+              proxy_set_header Host $http_host;
+              proxy_redirect off;
+          }
+      }
+
+- name: Restart Nginx
+  systemd:
+    name: nginx
+    enabled: yes
+    state: restarted
+
+- name: permit traffic in default zone on port 8001/tcp
+  ansible.posix.firewalld:
+    service: http
+    state: enabled
+    permanent: true
+    immediate: true
