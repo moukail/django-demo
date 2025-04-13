@@ -12,14 +12,6 @@
     state: present
     group: nginx
 
-- name: Give insecure permissions to an existing file
-  ansible.builtin.file:
-    path: /var/www/
-    owner: nginx
-    group: nginx
-    state: directory
-    mode: '0755'
-
 - name: Add /var/www/django_demo to Git safe.directory
   community.general.git_config:
     name: safe.directory
@@ -28,14 +20,22 @@
     state: present
 
 - name: Clone Django app
-  git:
+  ansible.builtin.git:
     repo: "{{ repo_url }}"
     dest: "/var/www/{{ project_name }}"
     version: main
     force: yes
 
+- name: Give insecure permissions to an existing file
+  ansible.builtin.file:
+    path: "/var/www/{{ project_name }}"
+    owner: nginx
+    group: nginx
+    state: directory
+    mode: '0755'
+
 - name: Set up virtualenv
-  command: python3 -m venv venv
+  command: python3 -m venv .venv
   args:
     chdir: "/var/www/{{ project_name }}"
 
@@ -47,9 +47,9 @@
 #    virtualenv_python: python3
 
 - name: Install requirements
-  pip:
+  ansible.builtin.pip:
     requirements: "/var/www/{{ project_name }}/requirements.txt"
-    virtualenv: "/var/www/{{ project_name }}/venv"
+    virtualenv: "/var/www/{{ project_name }}/.venv"
     virtualenv_python: python3
 
 - name: Set environment variables
@@ -69,17 +69,17 @@
   community.general.django_manage:
     command: migrate
     app_path: "/var/www/{{ project_name }}"
-    virtualenv: "/var/www/{{ project_name }}/venv"
+    virtualenv: "/var/www/{{ project_name }}/.venv"
 
 - name: Load the initial_data fixture into the application
   become_user: postgres
   community.general.django_manage:
     command: seed_users
     project_path: "/var/www/{{ project_name }}"
-    virtualenv: "/var/www/{{ project_name }}/venv"
+    virtualenv: "/var/www/{{ project_name }}/.venv"
 
 - name: Collect static files
   community.general.django_manage:
     command: collectstatic --noinput
     project_path: "/var/www/{{ project_name }}"
-    virtualenv: "/var/www/{{ project_name }}/venv"
+    virtualenv: "/var/www/{{ project_name }}/.venv"

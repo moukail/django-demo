@@ -5,12 +5,13 @@ sudo apt install python3.12
 
 ### set up virtual environment to install django
 ```bash
-python -m venv venv
-source venv/bin/activate
-pip index versions Django
-pip3 install django==5.2
-pip install -r requirements.txt
-pip3 list --local
+sudo python3 -m venv .venv
+source .venv/bin/activate
+./.venv/bin/pip install --upgrade pip
+./.venv/bin/pip index versions Django
+./.venv/bin/pip  install django==5.2
+./.venv/bin/pip install -r requirements.txt
+./.venv/bin/pip list --local
 
 deactivate
 ```
