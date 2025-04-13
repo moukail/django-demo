@@ -69,6 +69,11 @@
     src: options-ssl-nginx.conf
     dest: /etc/letsencrypt/options-ssl-nginx.conf
 
+- name: Creating proxy_params file
+  template:
+    src: proxy_params.conf
+    dest: /etc/nginx/proxy_params
+
 - name: Generate DH Parameters with a different size (2048 bits)
   community.crypto.openssl_dhparam:
     path: /etc/letsencrypt/ssl-dhparams.pem
