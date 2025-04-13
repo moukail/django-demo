@@ -4,3 +4,17 @@
     name: [ 'libxslt-devel', 'libxml2-devel', 'gd-devel' ]
     update_cache: yes
     state: latest
+
+- name: add http port
+  when: "'web' in group_names"
+  firewalld:
+    zone: public
+    service: http
+    permanent: yes
+    immediate: yes
+    state: enabled
+
+- name: restart service firewalld
+  systemd:
+    name: firewalld
+    state: restarted
