@@ -8,7 +8,7 @@
     dest: /etc/supervisord.d/daphne.ini
     content: |
       [program:daphne]
-      command=/var/www/{{ project_name }}/venv/bin/daphne -p 9001 {{ project_name }}.asgi:application
+      command=/var/www/{{ project_name }}/.venv/bin/daphne -u /var/www/{{ project_name }}/daphne.sock {{ project_name }}.asgi:application
       directory=/var/www/{{ project_name }}
       user=nginx
       autostart=true
