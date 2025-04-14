@@ -13,6 +13,8 @@ sudo ausearch -m avc -ts recent
 
 ### Generate a Policy Stub
 ```bash
+sudo dnf install policycoreutils-python-utils
+
 sudo ausearch -m avc -ts recent | audit2allow -M nginx_daphne
 cat nginx_daphne.te
 ```
