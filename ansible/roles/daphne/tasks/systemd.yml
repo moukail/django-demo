@@ -7,16 +7,10 @@
       After=network.target
 
       [Service]
-      User=www-data
-      Group=www-data
-      User=www-data
-      Group=www-data
+      User=nginx
+      Group=nginx
       WorkingDirectory=/var/www/{{ project_name }}
-      ExecStart=/var/www/{{ project_name }}/venv/bin/daphne -b 0.0.0.0 -p 8001 {{ project_name }}.asgi:application
-      #ExecStart=daphne -u /var/www/{{ project_name }}/daphne.sock {{ project_name }}.asgi.application
-      #Environment="DJANGO_SETTINGS_MODULE={{ project_name }}.settings"
-      #Environment="PATH=/var/www/{{ project_name }}/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin"
-      #Environment="PYTHONPATH=/var/www/{{ project_name }}"
+      ExecStart=/var/www/{{ project_name }}/.venv/bin/daphne -u /var/www/{{ project_name }}/daphne.sock {{ project_name }}.asgi:application
 
       [Install]
       WantedBy=multi-user.target
@@ -27,10 +21,3 @@
     name: daphne
     enabled: yes
     state: restarted
-
-- name: permit traffic in default zone on port 8001/tcp
-  ansible.posix.firewalld:
-    port: 8001/tcp
-    state: enabled
-    permanent: true
-    immediate: true
