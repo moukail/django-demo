@@ -33,20 +33,6 @@
     chdir: "{{ nginx_source_unpack.dest }}/nginx-{{ nginx_ver }}"
   when: nginx_configure.changed
 
-- name: Ensure group "nginx" exists
-  group:
-    name: nginx
-    system: yes
-    state: present
-
-- name: Add the user 'nginx'
-  user:
-    name: nginx
-    create_home: no
-    system: yes
-    state: present
-    group: nginx
-
 - name: Creating NGINX conf file
   template:
     src: nginx.conf

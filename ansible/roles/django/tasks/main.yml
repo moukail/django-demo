@@ -1,17 +1,3 @@
-- name: Ensure group "nginx" exists
-  group:
-    name: nginx
-    system: yes
-    state: present
-
-- name: Add the user 'nginx'
-  user:
-    name: nginx
-    create_home: no
-    system: yes
-    state: present
-    group: nginx
-
 - name: Add /var/www/django_demo to Git safe.directory
   community.general.git_config:
     name: safe.directory
@@ -38,13 +24,6 @@
   command: python3 -m venv .venv
   args:
     chdir: "/var/www/{{ project_name }}"
-
-#- name: Upgrade pip in virtual environment
-#  ansible.builtin.pip:
-#    name: [pip, setuptools]
-#    state: latest
-#    virtualenv: "/home/ubuntu/{{ project_name }}/venv"
-#    virtualenv_python: python3
 
 - name: Install requirements
   ansible.builtin.pip:

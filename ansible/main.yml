@@ -5,6 +5,21 @@
 
 - hosts: web
   become: true
+  pre_tasks:
+    - name: Ensure group "nginx" exists
+      group:
+        name: nginx
+        system: yes
+        state: present
+
+    - name: Add the user 'nginx'
+      user:
+        name: nginx
+        create_home: no
+        system: yes
+        state: present
+        group: nginx
+
   roles:
     - common
     - django
