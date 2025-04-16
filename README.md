@@ -75,11 +75,12 @@ pipx upgrade --include-injected ansible
 ```
 
 ```bash
-ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventory.ini ansible/main.yml --vault-password-file vault_pass.txt
+ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i ansible/inventory ansible/main.yml --vault-password-file vault_pass.txt
 ```
 
 #### Ansible vault
 ```bash
+ansible-vault encrypt_string mypassword
 ansible-vault encrypt ansible/host_vars/149.248.59.53.yml
 ```
 
